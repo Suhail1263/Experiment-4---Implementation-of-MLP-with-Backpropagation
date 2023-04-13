@@ -119,6 +119,71 @@ Normalize our dataset.
 
 ## PROGRAM 
 
+```py
+import pandas as pd
+import sklearn
+from sklearn import preprocessing
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+
+url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
+names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'Class']
+
+irisdata = pd.read_csv(url, names=names)
+
+# Takes first 4 columns and assign them to variable "X"
+X = irisdata.iloc[:, 0:4]
+
+# Takes first 5th columns and assign them to variable "Y". Object dtype refers to strings.
+y = irisdata.select_dtypes(include=[object])  
+
+X.head()
+
+y.head()
+
+# y actually contains all categories or classes:
+y.Class.unique()
+
+# Now transforming categorial into numerical values
+le = preprocessing.LabelEncoder()
+y = y.apply(le.fit_transform)
+y.head()
+
+# Now for train and test split (80% of  dataset into  training set and  other 20% into test data)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20)  
+
+# Feature scaling
+scaler = StandardScaler()  
+scaler.fit(X_train)
+
+X_train = scaler.transform(X_train)  
+X_test = scaler.transform(X_test)
+
+mlp = MLPClassifier(hidden_layer_sizes=(10, 10, 10), max_iter=1000)  
+mlp.fit(X_train, y_train.values.ravel())  
+predictions = mlp.predict(X_test) 
+
+print(predictions)
+
+# Last thing: evaluation of algorithm performance in classifying flowers
+print(confusion_matrix(y_test,predictions))
+
+print(classification_report(y_test,predictions))
+```
+
 ## OUTPUT 
+## PREDICTION
+<img width="489" alt="image" src="https://user-images.githubusercontent.com/113534309/231716352-b1f7471e-0aaf-4b3e-b4c3-3e7e6c2ece20.png">
+
+## CONFUSION MATRIX
+<img width="354" alt="image" src="https://user-images.githubusercontent.com/113534309/231716565-9136a309-fefb-4230-b775-115a5711f8f7.png">
+
+## CLASSIFICATION MATRIX
+<img width="462" alt="image" src="https://user-images.githubusercontent.com/113534309/231716722-97032e17-fa93-415b-a08e-7b691f6f481c.png">
 
 ## RESULT
+
+Thus, to implement a Multilayer Perceptron for Multi classification is executed and verified.
+
